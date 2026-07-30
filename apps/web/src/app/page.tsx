@@ -1,6 +1,12 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
+// Sem isso, o Next.js pré-renderiza a landing como estática e o CDN da
+// Hostinger cacheia o HTML por até 1 ano — se um deploy seguinte gerar um
+// hash de CSS/JS novo, a página cacheada fica presa referenciando arquivos
+// que não existem mais (404), quebrando a estilização inteira.
+export const dynamic = 'force-dynamic';
+
 export default function LandingPage() {
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-10 px-6 py-16 text-center">
