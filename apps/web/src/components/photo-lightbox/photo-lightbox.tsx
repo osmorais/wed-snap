@@ -4,6 +4,9 @@ import Image from 'next/image';
 import { X } from 'lucide-react';
 import type { Photo } from '@wed-snap/shared';
 import { RelativeTime } from '@/components/relative-time/relative-time';
+import { LikeButton } from '@/components/like-button/like-button';
+import { useLike } from '@/components/like-button/use-like';
+import { LikePop, useLikePop } from '@/components/like-button/like-pop';
 
 export function PhotoLightbox({
   photo,
@@ -12,7 +15,17 @@ export function PhotoLightbox({
   photo: Photo | null;
   onClose: () => void;
 }) {
+  // Os hooks precisam ser chamados sempre, mesmo com photo null (foto
+  // fechada) — por isso o early return abaixo vem depois deles, não antes.
+  const { liked, count, like, toggle } = useLike(photo?.id ?? '', photo?.likeCount ?? 0);
+  const { visible, pop } = useLikePop();
+
   if (!photo) return null;
+
+  function handleDoubleClick() {
+    like();
+    pop();
+  }
 
   return (
     <div
@@ -31,7 +44,11 @@ export function PhotoLightbox({
         className="flex max-h-full max-w-full flex-col items-center gap-3"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="relative h-[min(70vh,92vw)] w-[min(70vh,92vw)]">
+        {/* Duplo clique curte a foto, igual ao Instagram. */}
+        <div
+          onDoubleClick={handleDoubleClick}
+          className="relative h-[min(70vh,92vw)] w-[min(70vh,92vw)] select-none"
+        >
           <Image
             src={photo.imageUrl}
             alt={photo.caption}
@@ -39,11 +56,15 @@ export function PhotoLightbox({
             sizes="92vw"
             className="object-contain"
           />
+          <LikePop visible={visible} />
         </div>
-        <div className="max-w-[92vw] text-center">
-          <p className="font-hand text-3xl leading-none text-primary">{photo.guestName}</p>
-          {photo.caption && <p className="mt-1 text-sm text-white/90">{photo.caption}</p>}
-          <RelativeTime date={photo.createdAt} className="mt-1 block text-xs text-white/60" />
+        <div className="w-[min(70vh,92vw)] max-w-[92vw]">
+          <LikeButton liked={liked} count={count} onToggle={toggle} className="text-white" />
+          <div className="mt-1 text-center">
+            <p className="font-hand text-3xl leading-none text-primary">{photo.guestName}</p>
+            {photo.caption && <p className="mt-1 text-sm text-white/90">{photo.caption}</p>}
+            <RelativeTime date={photo.createdAt} className="mt-1 block text-xs text-white/60" />
+          </div>
         </div>
       </div>
     </div>

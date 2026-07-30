@@ -1,6 +1,6 @@
 import { PhotoGrid } from '@/components/photo-grid/photo-grid';
 import { UploadFab } from '@/components/upload-fab/upload-fab';
-import { ViewTabs } from '@/components/view-tabs/view-tabs';
+import { ViewSwitcher } from '@/components/view-switcher/view-switcher';
 import { getPhotos } from '@/lib/photos';
 
 // Sem isso o Next.js pré-renderiza a lista de fotos uma vez no build e
@@ -16,12 +16,9 @@ export default async function GalleryPage() {
   return (
     <main className="flex flex-1 flex-col sm:mx-auto sm:w-full sm:max-w-3xl">
       <header className="border-b border-border px-4 pt-6 pb-4">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-medium tracking-[0.2em] text-primary uppercase">
-            Ao vivo do casamento
-          </p>
-          <ViewTabs active="gallery" />
-        </div>
+        <p className="text-xs font-medium tracking-[0.2em] text-primary uppercase">
+          Ao vivo do casamento
+        </p>
         <div className="mt-1 flex items-baseline justify-between gap-3">
           <h1 className="font-heading text-3xl font-semibold italic">Galeria</h1>
           <span className="text-xs text-muted-foreground">
@@ -34,6 +31,7 @@ export default async function GalleryPage() {
         </div>
       </header>
       <PhotoGrid photos={oldestFirst} />
+      <ViewSwitcher active="gallery" />
       <UploadFab />
     </main>
   );

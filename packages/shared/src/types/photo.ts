@@ -3,6 +3,7 @@ export interface Photo {
   guestName: string;
   caption: string;
   imageUrl: string;
+  likeCount: number;
   challengeId: string | null;
   createdAt: string;
 }
