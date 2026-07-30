@@ -8,10 +8,8 @@ import { getPhotos } from '@/lib/photos';
 export const dynamic = 'force-dynamic';
 
 export default async function GalleryPage() {
+  // getPhotos() já vem ordenado por createdAt desc (mais recente primeiro).
   const photos = await getPhotos();
-  const oldestFirst = [...photos].sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-  );
 
   return (
     <main className="flex flex-1 flex-col sm:mx-auto sm:w-full sm:max-w-3xl">
@@ -30,7 +28,7 @@ export default async function GalleryPage() {
           </span>
         </div>
       </header>
-      <PhotoGrid photos={oldestFirst} />
+      <PhotoGrid photos={photos} />
       <ViewSwitcher active="gallery" />
       <UploadFab />
     </main>

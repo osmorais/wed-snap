@@ -1,15 +1,22 @@
 'use client';
 
 import Image from 'next/image';
+import { MessageCircle } from 'lucide-react';
 import type { Photo } from '@wed-snap/shared';
 import { RelativeTime } from '@/components/relative-time/relative-time';
 import { LikeButton } from '@/components/like-button/like-button';
 import { useLike } from '@/components/like-button/use-like';
+import { usePreviewComments } from '@/components/comments/use-preview-comments';
 import { PhotoLightbox } from '@/components/photo-lightbox/photo-lightbox';
 import { usePhotoLightbox } from '@/components/photo-lightbox/use-photo-lightbox';
 
 function PhotoGridItem({ photo, onOpen }: { photo: Photo; onOpen: () => void }) {
   const { liked, count, toggle } = useLike(photo.id, photo.likeCount);
+  const { count: commentCount } = usePreviewComments(
+    photo.id,
+    photo.commentCount,
+    photo.previewComments
+  );
 
   return (
     <div className="group relative aspect-square overflow-hidden rounded-md ring-1 ring-primary/15 shadow-[0_1px_2px_rgba(43,33,29,0.08),0_8px_16px_-6px_rgba(217,122,70,0.22)] motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95 motion-safe:duration-500">
@@ -34,15 +41,23 @@ function PhotoGridItem({ photo, onOpen }: { photo: Photo; onOpen: () => void }) 
           <RelativeTime date={photo.createdAt} className="block truncate text-[10px] text-white/60" />
         </span>
       </button>
-      <LikeButton
-        liked={liked}
-        count={count}
-        onToggle={(event) => {
-          event.stopPropagation();
-          toggle();
-        }}
-        className="absolute top-1.5 right-1.5 rounded-full bg-black/40 px-1.5 py-1 text-white backdrop-blur-sm"
-      />
+      <div className="absolute top-1.5 right-1.5 flex items-center gap-1">
+        <LikeButton
+          liked={liked}
+          count={count}
+          onToggle={(event) => {
+            event.stopPropagation();
+            toggle();
+          }}
+          className="rounded-full bg-black/40 px-1.5 py-1 text-white backdrop-blur-sm"
+        />
+        {commentCount > 0 && (
+          <span className="pointer-events-none flex items-center gap-1 rounded-full bg-black/40 px-1.5 py-1 text-white backdrop-blur-sm">
+            <MessageCircle className="h-5 w-5" />
+            <span className="text-xs tabular-nums">{commentCount}</span>
+          </span>
+        )}
+      </div>
     </div>
   );
 }
