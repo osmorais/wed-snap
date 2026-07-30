@@ -17,7 +17,7 @@ build/
 npm-debug.log*
 
 # Prisma
-api/prisma/migrations/dev.db
+apps/web/prisma/migrations/dev.db
 
 # Editor / OS
 .vscode/

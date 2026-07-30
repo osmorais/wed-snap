@@ -2,15 +2,11 @@
   "name": "wed-snap",
   "private": true,
   "workspaces": [
-    "api",
     "apps/web",
     "packages/shared"
   ],
   "scripts": {
-    "dev:api": "npm run dev --workspace=api",
     "dev:web": "npm run dev --workspace=apps/web",
-    "build": "npm run build --workspace=packages/shared && npm run build --workspace=api && npm run build --workspace=apps/web",
-    "build:api": "npm run build --workspace=packages/shared && npm run build --workspace=api",
-    "build:web": "npm run build --workspace=packages/shared && npm run build --workspace=apps/web"
+    "build": "npm run build --workspace=packages/shared && npm run build --workspace=apps/web"
   }
 }
