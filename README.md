@@ -24,3 +24,19 @@ O **WedSnap** é uma aplicação web projetada para capturar os momentos mais es
 ├── apps/
 │   └── web/         # Frontend Next.js (Hostinger)
 └── packages/shared/ # Tipagens e esquemas comuns
+```
+
+## 🏁 Como rodar localmente
+
+```bash
+npm install                      # instala tudo (workspaces)
+
+cp api/.env.example api/.env             # preencher com credenciais do Supabase
+cp apps/web/.env.example apps/web/.env   # NEXT_PUBLIC_API_URL
+
+npm run build --workspace=packages/shared
+cd api && npx prisma generate && npx prisma migrate dev
+
+npm run dev:api   # http://localhost:3000
+npm run dev:web   # http://localhost:3001 (ou porta livre)
+```
