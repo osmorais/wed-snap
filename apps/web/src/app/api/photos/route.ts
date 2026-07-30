@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { supabaseStorage, STORAGE_BUCKET } from '@/lib/supabase-storage';
+import { getSupabaseStorage, STORAGE_BUCKET } from '@/lib/supabase-storage';
 
 export async function GET() {
   try {
@@ -33,6 +33,7 @@ export async function POST(request: Request) {
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const fileName = `${randomUUID()}-${file.name}`;
+    const supabaseStorage = getSupabaseStorage();
 
     const { error } = await supabaseStorage.storage
       .from(STORAGE_BUCKET)
