@@ -41,7 +41,7 @@ export function PhotoFeed({ photos }: { photos: Photo[] }) {
                 src={photo.imageUrl}
                 alt={photo.caption}
                 fill
-                sizes="100vw"
+                sizes="(max-width: 640px) 100vw, 576px"
                 className="object-cover"
               />
             </button>

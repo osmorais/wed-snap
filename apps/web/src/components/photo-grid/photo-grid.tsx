@@ -34,7 +34,7 @@ export function PhotoGrid({ photos }: { photos: Photo[] }) {
               src={photo.imageUrl}
               alt={photo.caption}
               fill
-              sizes="(max-width: 640px) 50vw, 33vw"
+              sizes="(max-width: 640px) 50vw, 245px"
               className="object-cover"
             />
             <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/45 to-transparent px-2 pt-10 pb-1.5">
