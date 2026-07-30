@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "npm --prefix ../../packages/shared run build && next build",
-    "postbuild": "cp -r public .next/standalone/apps/web/public && mkdir -p .next/standalone/apps/web/.next/static && cp -r .next/static/. .next/standalone/apps/web/.next/static/",
+    "postbuild": "sh scripts/prepare-standalone.sh",
     "start": "next start",
     "start:standalone": "node .next/standalone/apps/web/server.js",
     "lint": "eslint",
