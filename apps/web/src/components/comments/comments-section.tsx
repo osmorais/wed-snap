@@ -91,7 +91,7 @@ export function CommentsSection({
               onChange={(e) => setNameDraft(e.target.value)}
               autoFocus
               required
-              className="flex-1 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-sm text-white placeholder:text-white/40 focus:outline-none"
+              className="flex-1 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-base text-white placeholder:text-white/40 focus:outline-none md:text-sm"
             />
             <button
               type="submit"
@@ -127,7 +127,7 @@ export function CommentsSection({
             onChange={(e) => setName(e.target.value)}
             placeholder="Seu nome"
             required
-            className="rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-sm text-white placeholder:text-white/40 focus:outline-none"
+            className="rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-base text-white placeholder:text-white/40 focus:outline-none md:text-sm"
           />
         )}
         <div className="flex gap-2">
@@ -136,7 +136,7 @@ export function CommentsSection({
             onChange={(e) => setText(e.target.value)}
             placeholder="Escreva um comentário..."
             required
-            className="flex-1 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-sm text-white placeholder:text-white/40 focus:outline-none"
+            className="flex-1 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-base text-white placeholder:text-white/40 focus:outline-none md:text-sm"
           />
           <button
             type="submit"
