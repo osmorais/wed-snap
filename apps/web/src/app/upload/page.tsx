@@ -8,7 +8,7 @@ import { useUploadFlow } from './upload-flow-context';
 
 export default function UploadNamePage() {
   const router = useRouter();
-  const { guestName, setGuestName } = useUploadFlow();
+  const { guestName, setGuestName, reset } = useUploadFlow();
   const [value, setValue] = useState(guestName);
 
   function handleSubmit(e: FormEvent) {
@@ -16,6 +16,11 @@ export default function UploadNamePage() {
     if (!value.trim()) return;
     setGuestName(value.trim());
     router.push('/upload/camera');
+  }
+
+  function handleCancel() {
+    reset();
+    router.push('/gallery');
   }
 
   return (
@@ -35,6 +40,9 @@ export default function UploadNamePage() {
         />
         <Button type="submit" size="lg" disabled={!value.trim()}>
           Continuar
+        </Button>
+        <Button type="button" size="lg" variant="ghost" onClick={handleCancel}>
+          Cancelar
         </Button>
       </form>
     </main>
