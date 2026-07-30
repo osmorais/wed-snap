@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Sem modelo de usuário: o convidado não faz login, só informa o nome no upload.
+model Photo {
+  id          String     @id @default(cuid())
+  guestName   String
+  caption     String
+  imageUrl    String
+  challengeId String?
+  challenge   Challenge? @relation(fields: [challengeId], references: [id])
+  createdAt   DateTime   @default(now())
+
+  @@index([createdAt])
+}
+
+model Challenge {
+  id          String  @id @default(cuid())
+  title       String
+  description String
+  photos      Photo[]
+}

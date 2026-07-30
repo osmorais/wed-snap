@@ -1,10 +1,14 @@
 import { PhotoGrid } from '@/components/photo-grid/photo-grid';
 import { UploadFab } from '@/components/upload-fab/upload-fab';
 import { ViewTabs } from '@/components/view-tabs/view-tabs';
-import { fetchPhotos } from '@/services/photo.service';
+import { getPhotos } from '@/lib/photos';
+
+// Sem isso o Next.js pré-renderiza a lista de fotos uma vez no build e
+// nunca mais atualiza — a galeria precisa refletir os uploads em tempo real.
+export const dynamic = 'force-dynamic';
 
 export default async function GalleryPage() {
-  const photos = await fetchPhotos();
+  const photos = await getPhotos();
   const oldestFirst = [...photos].sort(
     (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
   );
