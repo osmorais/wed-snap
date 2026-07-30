@@ -1,0 +1,1 @@
+export const PREVIEW_COMMENTS_LIMIT = 5;

@@ -1,39 +1,52 @@
 'use client';
 
-import { useCallback, useState, useSyncExternalStore } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 import { isPhotoLiked, setPhotoLiked } from '@/lib/liked-photos';
+import { createKeyedStore } from '@/lib/keyed-store';
 
 // Nenhum listener depende de qual foto mudou — todo hook montado reavalia
 // isPhotoLiked(photoId) quando qualquer curtida muda em qualquer lugar da
 // página, o que é barato o bastante pra não precisar de granularidade.
-const listeners = new Set<() => void>();
+const likedListeners = new Set<() => void>();
 
-function subscribe(listener: () => void) {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
+function subscribeLiked(listener: () => void) {
+  likedListeners.add(listener);
+  return () => likedListeners.delete(listener);
 }
 
-function notify() {
-  listeners.forEach((listener) => listener());
+function notifyLiked() {
+  likedListeners.forEach((listener) => listener());
 }
 
-function getServerSnapshot() {
+function getServerLikedSnapshot() {
   return false;
 }
+
+// Contador por foto — compartilhado entre feed, galeria e lightbox, pra
+// curtir num lugar refletir nos outros sem precisar recarregar a página.
+const countStore = createKeyedStore<number>();
 
 export function useLike(photoId: string, initialCount: number) {
   // useSyncExternalStore em vez de useEffect+setState: no servidor não
   // existe localStorage, então o snapshot do servidor é sempre "não
   // curtido" e só passa a refletir o localStorage real depois da
   // hidratação — mesma técnica usada em RelativeTime, evita mismatch.
-  const liked = useSyncExternalStore(subscribe, () => isPhotoLiked(photoId), getServerSnapshot);
-  const [count, setCount] = useState(initialCount);
+  const liked = useSyncExternalStore(
+    subscribeLiked,
+    () => isPhotoLiked(photoId),
+    getServerLikedSnapshot
+  );
+  const count = useSyncExternalStore(
+    (listener) => countStore.subscribe(photoId, listener),
+    () => countStore.getSnapshot(photoId, initialCount),
+    () => initialCount
+  );
 
   const apply = useCallback(
     async (nextLiked: boolean) => {
       setPhotoLiked(photoId, nextLiked);
-      notify();
-      setCount((current) => current + (nextLiked ? 1 : -1));
+      notifyLiked();
+      countStore.setValue(photoId, (current) => current + (nextLiked ? 1 : -1));
 
       try {
         const res = await fetch(`/api/photos/${photoId}/like`, {
@@ -45,8 +58,8 @@ export function useLike(photoId: string, initialCount: number) {
       } catch (err) {
         console.error(err);
         setPhotoLiked(photoId, !nextLiked);
-        notify();
-        setCount((current) => current + (nextLiked ? -1 : 1));
+        notifyLiked();
+        countStore.setValue(photoId, (current) => current + (nextLiked ? -1 : 1));
       }
     },
     [photoId]

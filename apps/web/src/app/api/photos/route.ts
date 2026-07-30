@@ -1,12 +1,25 @@
 import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
+import { PREVIEW_COMMENTS_LIMIT } from '@wed-snap/shared';
 import { prisma } from '@/lib/prisma';
 import { getSupabaseStorage, STORAGE_BUCKET } from '@/lib/supabase-storage';
 
 export async function GET() {
   try {
-    const photos = await prisma.photo.findMany({ orderBy: { createdAt: 'desc' } });
-    return NextResponse.json(photos);
+    const photos = await prisma.photo.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        _count: { select: { comments: true } },
+        comments: { orderBy: { createdAt: 'asc' }, take: PREVIEW_COMMENTS_LIMIT },
+      },
+    });
+    return NextResponse.json(
+      photos.map(({ _count, comments, ...photo }) => ({
+        ...photo,
+        commentCount: _count.comments,
+        previewComments: comments,
+      }))
+    );
   } catch (err) {
     console.error(err);
     return NextResponse.json({ message: 'Erro interno do servidor.' }, { status: 500 });
@@ -59,7 +72,7 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json(photo, { status: 201 });
+    return NextResponse.json({ ...photo, commentCount: 0, previewComments: [] }, { status: 201 });
   } catch (err) {
     console.error(err);
     return NextResponse.json({ message: 'Erro interno do servidor.' }, { status: 500 });

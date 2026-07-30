@@ -17,6 +17,7 @@ model Photo {
   likeCount   Int        @default(0)
   challengeId String?
   challenge   Challenge? @relation(fields: [challengeId], references: [id])
+  comments    Comment[]
   createdAt   DateTime   @default(now())
 
   @@index([createdAt])
@@ -27,4 +28,15 @@ model Challenge {
   title       String
   description String
   photos      Photo[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  photoId   String
+  photo     Photo    @relation(fields: [photoId], references: [id], onDelete: Cascade)
+  guestName String
+  text      String
+  createdAt DateTime @default(now())
+
+  @@index([photoId, createdAt])
 }
