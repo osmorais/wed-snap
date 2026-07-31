@@ -54,7 +54,10 @@ export function LoginForm() {
 
   function handleSkip() {
     skipLogin();
-    router.push(redirectTo);
+    // Ignora o redirect (pode ser uma rota que exige login, tipo /upload —
+    // voltar pra lá só faria dar bounce de volta pro /login). "Só
+    // visualizar" sempre leva pra galeria.
+    router.push('/gallery');
   }
 
   return (

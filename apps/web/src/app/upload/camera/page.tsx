@@ -3,13 +3,14 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { CameraCapture } from '@/components/camera-capture/camera-capture';
+import { Button } from '@/components/ui/button';
 import { useGuestSession } from '@/components/auth/use-guest-session';
 import { useUploadFlow } from '../upload-flow-context';
 
 export default function UploadCameraPage() {
   const router = useRouter();
   const session = useGuestSession();
-  const { setPhoto } = useUploadFlow();
+  const { setPhoto, reset } = useUploadFlow();
 
   useEffect(() => {
     if (session === null) router.replace('/upload');
@@ -29,6 +30,16 @@ export default function UploadCameraPage() {
           router.push('/upload/review');
         }}
       />
+      <Button
+        size="lg"
+        variant="ghost"
+        onClick={() => {
+          reset();
+          router.push('/gallery');
+        }}
+      >
+        Cancelar
+      </Button>
     </main>
   );
 }
