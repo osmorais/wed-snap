@@ -1,7 +1,7 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
-import { getSavedGuestName, subscribeGuestName } from '@/lib/guest-name';
+import { getGuestSession, subscribeGuestSession, type GuestSession } from '@/lib/guest-session';
 
 function getServerSnapshot() {
   return null;
@@ -9,6 +9,6 @@ function getServerSnapshot() {
 
 // useSyncExternalStore em vez de useEffect+setState — mesma técnica do
 // useLike, pra não dar mismatch de hidratação com o localStorage do servidor.
-export function useSavedGuestName() {
-  return useSyncExternalStore(subscribeGuestName, getSavedGuestName, getServerSnapshot);
+export function useGuestSession(): GuestSession | null {
+  return useSyncExternalStore(subscribeGuestSession, getGuestSession, getServerSnapshot);
 }

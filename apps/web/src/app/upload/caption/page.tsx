@@ -7,30 +7,37 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { compressPhoto } from '@/lib/image-compression';
 import { uploadPhoto } from '@/services/photo.service';
+import { useGuestSession } from '@/components/auth/use-guest-session';
 import { useUploadFlow } from '../upload-flow-context';
 
 export default function UploadCaptionPage() {
   const router = useRouter();
-  const { guestName, photo } = useUploadFlow();
+  const session = useGuestSession();
+  const { photo } = useUploadFlow();
   const [caption, setCaption] = useState('');
   const [isPublishing, setIsPublishing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!photo) router.replace('/upload');
-  }, [photo, router]);
+    if (!photo || session === null) router.replace('/upload');
+  }, [photo, session, router]);
 
-  if (!photo) return null;
+  if (!photo || !session) return null;
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    if (!photo || isPublishing) return;
+    if (!photo || !session || isPublishing) return;
 
     setIsPublishing(true);
     setError(null);
     try {
       const compressed = await compressPhoto(photo);
-      await uploadPhoto({ file: compressed, guestName, caption });
+      await uploadPhoto({
+        file: compressed,
+        guestName: session.name,
+        pin: session.pin,
+        caption,
+      });
       // Não reseta o estado do fluxo aqui: fazer isso enquanto esta página
       // ainda está montada dispararia o guard acima (photo vira null) e
       // redirecionaria de volta para /upload antes da navegação terminar.

@@ -1,6 +1,7 @@
 import { PhotoGrid } from '@/components/photo-grid/photo-grid';
 import { UploadFab } from '@/components/upload-fab/upload-fab';
 import { ViewSwitcher } from '@/components/view-switcher/view-switcher';
+import { LoginBanner } from '@/components/auth/login-banner';
 import { getPhotos } from '@/lib/photos';
 
 // Sem isso o Next.js pré-renderiza a lista de fotos uma vez no build e
@@ -27,6 +28,7 @@ export default async function GalleryPage() {
                 : `${photos.length} fotos`}
           </span>
         </div>
+        <LoginBanner redirectTo="/gallery" />
       </header>
       <PhotoGrid photos={photos} />
       <ViewSwitcher active="gallery" />

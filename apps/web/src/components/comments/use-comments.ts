@@ -2,6 +2,7 @@
 
 import { useEffect, useSyncExternalStore } from 'react';
 import type { Comment } from '@wed-snap/shared';
+import { getGuestSession } from '@/lib/guest-session';
 import { commentsStore, commentCountStore } from './comments-store';
 
 export function useComments(photoId: string, initialCount: number, initialComments: Comment[]) {
@@ -35,11 +36,14 @@ export function useComments(photoId: string, initialCount: number, initialCommen
     };
   }, [photoId]);
 
-  async function addComment(input: { guestName: string; text: string }) {
+  async function addComment(text: string) {
+    const session = getGuestSession();
+    if (!session) throw new Error('É preciso entrar antes de comentar.');
+
     const res = await fetch(`/api/photos/${photoId}/comments`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(input),
+      body: JSON.stringify({ guestName: session.name, pin: session.pin, text }),
     });
     if (!res.ok) throw new Error('Falha ao comentar');
 

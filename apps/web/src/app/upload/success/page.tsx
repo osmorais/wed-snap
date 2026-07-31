@@ -3,14 +3,16 @@
 import { CheckCircle2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { useGuestSession } from '@/components/auth/use-guest-session';
 import { useUploadFlow } from '../upload-flow-context';
 
-// Sem guard baseado em `photo`/`guestName`: o reset do fluxo só acontece
-// quando o convidado sai desta tela (ver galeria ou enviar outra foto),
-// então não corre o risco de disparar o redirect da página de legenda.
+// Sem guard baseado em `photo`: o reset do fluxo só acontece quando o
+// convidado sai desta tela (ver galeria ou enviar outra foto), então não
+// corre o risco de disparar o redirect da página de legenda.
 export default function UploadSuccessPage() {
   const router = useRouter();
-  const { guestName, reset } = useUploadFlow();
+  const session = useGuestSession();
+  const { reset } = useUploadFlow();
 
   function goToGallery() {
     reset();
@@ -28,7 +30,7 @@ export default function UploadSuccessPage() {
       <div className="space-y-2">
         <h1 className="text-2xl font-semibold">Foto publicada!</h1>
         <p className="text-muted-foreground max-w-xs text-sm">
-          {guestName ? `Obrigado, ${guestName}! ` : ''}
+          {session ? `Obrigado, ${session.name}! ` : ''}
           Sua foto já está na galeria do casamento.
         </p>
       </div>

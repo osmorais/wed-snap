@@ -8,7 +8,19 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// Sem modelo de usuário: o convidado não faz login, só informa o nome no upload.
+// Identidade leve por PIN: o convidado escolhe um nome e um PIN de 4 dígitos
+// na primeira vez (guardados no localStorage do aparelho dele depois disso).
+// Não é uma conta de verdade — só existe pra impedir que alguém publique ou
+// comente usando o nome de outra pessoa. nameLower garante unicidade sem
+// diferenciar maiúsculas/minúsculas.
+model GuestAccount {
+  id        String   @id @default(cuid())
+  name      String
+  nameLower String   @unique
+  pinHash   String
+  createdAt DateTime @default(now())
+}
+
 model Photo {
   id          String     @id @default(cuid())
   guestName   String

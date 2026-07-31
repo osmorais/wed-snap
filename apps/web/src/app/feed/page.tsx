@@ -1,6 +1,7 @@
 import { PhotoFeed } from '@/components/photo-feed/photo-feed';
 import { UploadFab } from '@/components/upload-fab/upload-fab';
 import { ViewSwitcher } from '@/components/view-switcher/view-switcher';
+import { LoginBanner } from '@/components/auth/login-banner';
 import { getPhotos } from '@/lib/photos';
 
 // Sem isso o Next.js pré-renderiza a lista de fotos uma vez no build e
@@ -20,6 +21,7 @@ export default async function FeedPage() {
           Ao vivo do casamento
         </p>
         <h1 className="mt-1 font-heading text-3xl font-semibold italic">Feed</h1>
+        <LoginBanner redirectTo="/feed" />
       </header>
       <PhotoFeed photos={newestFirst} />
       <ViewSwitcher active="feed" />

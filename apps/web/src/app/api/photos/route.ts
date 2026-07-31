@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { PREVIEW_COMMENTS_LIMIT } from '@wed-snap/shared';
 import { prisma } from '@/lib/prisma';
 import { getSupabaseStorage, STORAGE_BUCKET } from '@/lib/supabase-storage';
+import { isValidPin, verifyGuestCredentials } from '@/lib/guest-account';
 
 export async function GET() {
   try {
@@ -31,6 +32,7 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     const file = formData.get('file');
     const guestName = formData.get('guestName');
+    const pin = formData.get('pin');
     const caption = formData.get('caption');
     const challengeId = formData.get('challengeId');
 
@@ -42,6 +44,14 @@ export async function POST(request: Request) {
         { message: 'guestName e caption são obrigatórios.' },
         { status: 400 }
       );
+    }
+    if (!isValidPin(pin)) {
+      return NextResponse.json({ message: 'PIN deve ter 4 dígitos.' }, { status: 400 });
+    }
+
+    const auth = await verifyGuestCredentials(guestName, pin);
+    if (!auth.ok) {
+      return NextResponse.json({ message: auth.message }, { status: auth.status });
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
@@ -65,7 +75,7 @@ export async function POST(request: Request) {
 
     const photo = await prisma.photo.create({
       data: {
-        guestName,
+        guestName: auth.name,
         caption,
         imageUrl: publicUrlData.publicUrl,
         challengeId: typeof challengeId === 'string' && challengeId ? challengeId : undefined,

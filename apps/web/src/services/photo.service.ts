@@ -3,11 +3,13 @@ import type { Photo } from '@wed-snap/shared';
 export async function uploadPhoto(params: {
   file: File;
   guestName: string;
+  pin: string;
   caption: string;
 }): Promise<Photo> {
   const formData = new FormData();
   formData.append('file', params.file);
   formData.append('guestName', params.guestName);
+  formData.append('pin', params.pin);
   formData.append('caption', params.caption);
 
   const res = await fetch('/api/photos', { method: 'POST', body: formData });

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { isValidPin, verifyGuestCredentials } from '@/lib/guest-account';
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -30,9 +31,17 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         { status: 400 }
       );
     }
+    if (!isValidPin(body?.pin)) {
+      return NextResponse.json({ message: 'PIN deve ter 4 dígitos.' }, { status: 400 });
+    }
+
+    const auth = await verifyGuestCredentials(guestName, body.pin);
+    if (!auth.ok) {
+      return NextResponse.json({ message: auth.message }, { status: auth.status });
+    }
 
     const comment = await prisma.comment.create({
-      data: { photoId: id, guestName, text },
+      data: { photoId: id, guestName: auth.name, text },
     });
 
     return NextResponse.json(comment, { status: 201 });

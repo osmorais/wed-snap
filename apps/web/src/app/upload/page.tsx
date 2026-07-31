@@ -1,50 +1,22 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useUploadFlow } from './upload-flow-context';
+import { useGuestSession } from '@/components/auth/use-guest-session';
 
-export default function UploadNamePage() {
+// O nome já vem da sessão (login/PIN) agora — essa tela não pergunta mais
+// nada, só decide pra onde mandar o convidado.
+export default function UploadGatePage() {
   const router = useRouter();
-  const { guestName, setGuestName, reset } = useUploadFlow();
-  const [value, setValue] = useState(guestName);
+  const session = useGuestSession();
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    if (!value.trim()) return;
-    setGuestName(value.trim());
-    router.push('/upload/camera');
-  }
+  useEffect(() => {
+    if (session === null) {
+      router.replace('/login?redirect=/upload');
+    } else {
+      router.replace('/upload/camera');
+    }
+  }, [session, router]);
 
-  function handleCancel() {
-    reset();
-    router.push('/gallery');
-  }
-
-  return (
-    <main className="flex flex-1 flex-col justify-center gap-6 px-6 py-16">
-      <div className="space-y-2 text-center">
-        <h1 className="text-2xl font-semibold">Qual é o seu nome?</h1>
-        <p className="text-muted-foreground text-sm">
-          Usamos só para identificar quem enviou a foto.
-        </p>
-      </div>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <Input
-          autoFocus
-          placeholder="Seu nome"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-        />
-        <Button type="submit" size="lg" disabled={!value.trim()}>
-          Continuar
-        </Button>
-        <Button type="button" size="lg" variant="ghost" onClick={handleCancel}>
-          Cancelar
-        </Button>
-      </form>
-    </main>
-  );
+  return null;
 }
