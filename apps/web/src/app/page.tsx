@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { AuthGate } from '@/components/auth/auth-gate';
+import { WeddingHero } from '@/components/wedding-logo/wedding-hero';
 
 // Sem isso, o Next.js pré-renderiza a landing como estática e o CDN da
 // Hostinger cacheia o HTML por até 1 ano — se um deploy seguinte gerar um
@@ -13,12 +14,7 @@ export default function LandingPage() {
     <>
       <AuthGate />
       <main className="flex flex-1 flex-col items-center justify-center gap-10 px-6 py-16 text-center">
-        <div className="space-y-2">
-          <p className="font-heading text-5xl leading-tight italic sm:text-6xl">
-            Larissa <span className="text-primary not-italic">&amp;</span> Osmar
-          </p>
-          <p className="text-sm tracking-[0.2em] text-muted-foreground uppercase">15.08.26</p>
-        </div>
+        <WeddingHero />
         <div className="space-y-3">
           <p className="text-muted-foreground max-w-sm">
             Ajude a registrar os melhores momentos do casamento. Envie fotos direto do seu

@@ -2,12 +2,12 @@
 
 import { usePathname } from 'next/navigation';
 
-// Na landing (primeira tela, "/") a logo aparece grande e centralizada
-// no próprio hero, então a versão pequena e fixa do topo fica escondida
-// lá para não duplicar a marca.
+// Na landing ("/") e no login ("/login") a logo aparece grande e
+// centralizada (WeddingHero), então a versão pequena e fixa do topo fica
+// escondida nessas duas telas para não duplicar a marca.
 export function WeddingLogo() {
   const pathname = usePathname();
-  if (pathname === '/') return null;
+  if (pathname === '/' || pathname === '/login') return null;
 
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background/90 backdrop-blur-sm">

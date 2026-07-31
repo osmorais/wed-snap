@@ -12,7 +12,7 @@ export function AuthGate() {
 
   useEffect(() => {
     if (!getGuestSession() && !hasSkippedLogin()) {
-      router.replace('/login');
+      router.replace('/login?redirect=/gallery');
     }
   }, [router]);
 

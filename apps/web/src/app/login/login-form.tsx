@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { saveGuestSession, skipLogin } from '@/lib/guest-session';
+import { WeddingHero } from '@/components/wedding-logo/wedding-hero';
 
 export function LoginForm() {
   const router = useRouter();
@@ -57,7 +58,8 @@ export function LoginForm() {
   }
 
   return (
-    <main className="flex flex-1 flex-col justify-center gap-6 px-6 py-16">
+    <main className="flex flex-1 flex-col justify-center gap-8 px-6 py-16">
+      <WeddingHero />
       <div className="space-y-2 text-center">
         <h1 className="font-heading text-3xl font-semibold italic">
           {mode === 'login' ? 'Entrar' : 'Criar acesso'}
