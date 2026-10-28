@@ -36,6 +36,11 @@ cp apps/web/.env.example apps/web/.env   # NEXT_PUBLIC_API_URL
 
 npm run build --workspace=packages/shared
 cd api && npx prisma generate && npx prisma migrate dev
+```
+
+www.casamentolarissaeosmar.com.br
+<img width="1390" height="911" alt="image" src="https://github.com/user-attachments/assets/dc655e14-b9cb-4d5a-a7d5-df3881e6fa99" />
+
 
 npm run dev:api   # http://localhost:3000
 npm run dev:web   # http://localhost:3001 (ou porta livre)
